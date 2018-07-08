@@ -116,28 +116,6 @@ static void inner(const VcpkgCmdArguments& args)
     if (args.command != "autocomplete")
     {
         Commands::Version::warn_if_vcpkg_version_mismatch(paths);
-        std::string surveydate = *GlobalState::g_surveydate.lock();
-        auto maybe_surveydate = Chrono::CTime::parse(surveydate);
-        if (auto p_surveydate = maybe_surveydate.get())
-        {
-            auto delta = std::chrono::system_clock::now() - p_surveydate->to_time_point();
-            // 24 hours/day * 30 days/month
-            if (std::chrono::duration_cast<std::chrono::hours>(delta).count() > 24 * 30)
-            {
-                std::default_random_engine generator(
-                    static_cast<unsigned int>(std::chrono::system_clock::now().time_since_epoch().count()));
-                std::uniform_int_distribution<int> distribution(1, 4);
-
-                if (distribution(generator) == 1)
-                {
-                    Metrics::g_metrics.lock()->track_property("surveyprompt", "true");
-                    System::println(
-                        System::Color::success,
-                        "Your feedback is important to improve Vcpkg! Please take 3 minutes to complete our survey "
-                        "by running: vcpkg contact --survey");
-                }
-            }
-        }
     }
 
     if (const auto command_function = find_command(Commands::get_available_commands_type_b()))
@@ -216,8 +194,6 @@ static void load_config()
     {
         config.last_completed_survey = config.user_time;
     }
-
-    GlobalState::g_surveydate.lock()->assign(config.last_completed_survey);
 
     if (write_config)
     {
