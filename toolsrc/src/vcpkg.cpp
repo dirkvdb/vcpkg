@@ -138,7 +138,7 @@ static void inner(const VcpkgCmdArguments& args)
         else
         {
 #if defined(_WIN32)
-            default_triplet = Triplet::X86_WINDOWS;
+            default_triplet = Triplet::X64_WINDOWS;
 #elif defined(__APPLE__)
             default_triplet = Triplet::from_canonical_name("x64-osx");
 #elif defined(__FreeBSD__)
