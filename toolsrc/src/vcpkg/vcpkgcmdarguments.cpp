@@ -104,6 +104,11 @@ namespace vcpkg
                     parse_switch(true, "debug", args.debug);
                     continue;
                 }
+                if (arg == "--verbose")
+                {
+                    parse_switch(true, "verbose", args.verboseoutput);
+                    continue;
+                }
                 if (arg == "--sendmetrics")
                 {
                     parse_switch(true, "sendmetrics", args.sendmetrics);

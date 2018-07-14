@@ -264,6 +264,7 @@ int main(const int argc, const char* const* const argv)
 
     if (const auto p = args.featurepackages.get()) GlobalState::feature_packages = *p;
     if (const auto p = args.binarycaching.get()) GlobalState::g_binary_caching = *p;
+    if (const auto p = args.verboseoutput.get()) GlobalState::g_verbose_output = *p;
 
     if (const auto p = args.printmetrics.get()) Metrics::g_metrics.lock()->set_print_metrics(*p);
     if (const auto p = args.sendmetrics.get()) Metrics::g_metrics.lock()->set_send_metrics(*p);

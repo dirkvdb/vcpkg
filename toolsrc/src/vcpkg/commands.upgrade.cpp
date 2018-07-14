@@ -151,6 +151,7 @@ namespace vcpkg::Commands::Upgrade
             Build::DownloadTool::BUILT_IN,
             GlobalState::g_binary_caching ? Build::BinaryCaching::YES : Build::BinaryCaching::NO,
             Build::FailOnTombstone::NO,
+            GlobalState::g_verbose_output ? Build::VerboseOutput::YES : Build::VerboseOutput::NO,
         };
 
         // Set build settings for all install actions

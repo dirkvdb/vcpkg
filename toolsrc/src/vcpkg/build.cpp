@@ -69,6 +69,7 @@ namespace vcpkg::Build::Command
             Build::DownloadTool::BUILT_IN,
             GlobalState::g_binary_caching ? Build::BinaryCaching::YES : Build::BinaryCaching::NO,
             Build::FailOnTombstone::NO,
+            GlobalState::g_verbose_output ? Build::VerboseOutput::YES : Build::VerboseOutput::NO,
         };
 
         std::set<std::string> features_as_set(full_spec.features.begin(), full_spec.features.end());
@@ -376,6 +377,7 @@ namespace vcpkg::Build
                 {"GIT", git_exe_path},
                 {"FEATURES", Strings::join(";", config.feature_list)},
                 {"ALL_FEATURES", all_features},
+                {"VCPKG_VERBOSE", Util::Enum::to_bool(config.build_package_options.verbose_output) ? "1" : "0"}
             });
 
         auto command = make_build_env_cmd(pre_build_info, toolset);

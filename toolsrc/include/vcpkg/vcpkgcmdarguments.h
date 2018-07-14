@@ -75,6 +75,7 @@ namespace vcpkg
         std::unique_ptr<std::string> vcpkg_root_dir;
         std::unique_ptr<std::string> triplet;
         Optional<bool> debug = nullopt;
+        Optional<bool> verboseoutput = nullopt;
         Optional<bool> sendmetrics = nullopt;
         Optional<bool> printmetrics = nullopt;
 

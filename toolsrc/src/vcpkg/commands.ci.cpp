@@ -66,6 +66,7 @@ namespace vcpkg::Commands::CI
             Build::DownloadTool::BUILT_IN,
             GlobalState::g_binary_caching ? Build::BinaryCaching::YES : Build::BinaryCaching::NO,
             Build::FailOnTombstone::YES,
+            GlobalState::g_verbose_output ? Build::VerboseOutput::YES : Build::VerboseOutput::NO,
         };
 
         vcpkg::Cache<Triplet, Build::PreBuildInfo> pre_build_info_cache;

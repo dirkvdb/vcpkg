@@ -591,6 +591,7 @@ namespace vcpkg::Install
             download_tool,
             GlobalState::g_binary_caching ? Build::BinaryCaching::YES : Build::BinaryCaching::NO,
             Build::FailOnTombstone::NO,
+            GlobalState::g_verbose_output ? Build::VerboseOutput::YES : Build::VerboseOutput::NO,
         };
 
         auto all_ports = Paragraphs::load_all_ports(paths.get_filesystem(), paths.ports);
