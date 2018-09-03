@@ -214,7 +214,12 @@ namespace vcpkg::Files
                                fs::copy_options opts,
                                std::error_code& ec) override
         {
-            return fs::stdfs::copy_file(oldpath, newpath, opts, ec);
+            #ifdef __MINGW32__
+                // the std fs implementation seems to corrupt files on mingw
+                return CopyFile(oldpath.string().c_str(), newpath.string().c_str(), TRUE);
+            #else
+                return fs::stdfs::copy_file(oldpath, newpath, opts, ec);
+            #endif
         }
 
         virtual fs::file_status status(const fs::path& path, std::error_code& ec) const override
@@ -252,7 +257,7 @@ namespace vcpkg::Files
 
         virtual std::vector<fs::path> find_from_PATH(const std::string& name) const override
         {
-#if defined(_WIN32)
+#if defined(_WIN32) && !defined (__MINGW32__)
             static constexpr StringLiteral EXTS[] = {".cmd", ".exe", ".bat"};
             auto paths = Strings::split(System::get_environment_variable("PATH").value_or_exit(VCPKG_LINE_INFO), ";");
 

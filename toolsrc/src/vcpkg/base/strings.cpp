@@ -26,7 +26,7 @@ namespace vcpkg::Strings::details
         va_list args;
         va_start(args, fmtstr);
 
-#if defined(_WIN32)
+#if defined(_WIN32) && !defined(__MINGW32__)
         const int sz = _vscprintf_l(fmtstr, c_locale(), args);
 #else
         const int sz = vsnprintf(nullptr, 0, fmtstr, args);
@@ -35,7 +35,7 @@ namespace vcpkg::Strings::details
 
         std::string output(sz, '\0');
 
-#if defined(_WIN32)
+#if defined(_WIN32) && !defined(__MINGW32__)
         _vsnprintf_s_l(&output.at(0), output.size() + 1, output.size(), fmtstr, c_locale(), args);
 #else
         va_start(args, fmtstr);

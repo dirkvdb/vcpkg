@@ -5,7 +5,7 @@
 #include <vcpkg/paragraphs.h>
 #include <vcpkg/userconfig.h>
 
-#if defined(_WIN32)
+#if defined(_WIN32) && !defined(__MINGW32__)
 namespace
 {
     static vcpkg::Lazy<fs::path> s_localappdata;
@@ -31,7 +31,7 @@ namespace vcpkg
 {
     fs::path get_user_dir()
     {
-#if defined(_WIN32)
+#if defined(_WIN32) && !defined(__MINGW32__)
         return get_localappdata() / "vcpkg";
 #else
         auto maybe_home = System::get_environment_variable("HOME");

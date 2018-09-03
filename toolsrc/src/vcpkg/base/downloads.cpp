@@ -34,9 +34,14 @@ namespace vcpkg::Downloads
                            target_file_path,
                            std::to_string(err));
 
+        #ifdef __MINGW32__
+        DWORD accessType = WINHTTP_ACCESS_TYPE_DEFAULT_PROXY;
+        #else
+        DWORD accessType = IsWindows8Point1OrGreater() ? WINHTTP_ACCESS_TYPE_AUTOMATIC_PROXY
+                                                       : WINHTTP_ACCESS_TYPE_DEFAULT_PROXY;
+        #endif
         auto hSession = WinHttpOpen(L"vcpkg/1.0",
-                                    IsWindows8Point1OrGreater() ? WINHTTP_ACCESS_TYPE_AUTOMATIC_PROXY
-                                                                : WINHTTP_ACCESS_TYPE_DEFAULT_PROXY,
+                                    accessType,
                                     WINHTTP_NO_PROXY_NAME,
                                     WINHTTP_NO_PROXY_BYPASS,
                                     0);

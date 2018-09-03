@@ -262,6 +262,9 @@ namespace vcpkg::System
     {
         auto timer = Chrono::ElapsedTimer::create_started();
 #if defined(_WIN32)
+#ifdef __MINGW32__
+        return cmd_execute(cmd_line);
+#endif
 
         PROCESS_INFORMATION process_info;
         memset(&process_info, 0, sizeof(PROCESS_INFORMATION));

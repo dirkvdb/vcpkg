@@ -74,6 +74,9 @@ namespace vcpkg
 
         fs.write_contents(status_file_new, Strings::serialize(current_status_db));
 
+        if (fs.exists(status_file)) {
+            fs.remove(status_file);
+        }
         fs.rename(status_file_new, status_file);
 
         for (auto&& file : update_files)

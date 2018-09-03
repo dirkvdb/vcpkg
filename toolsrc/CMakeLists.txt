@@ -48,6 +48,11 @@ elseif(CLANG)
     target_link_libraries(vcpkg PRIVATE c++experimental)
 endif()
 
+if(MINGW)
+    target_link_libraries(vcpkg PRIVATE winhttp version)
+endif()
+
+
 if(WIN32)
     target_link_libraries(vcpkg PRIVATE bcrypt)
 endif()

@@ -2,6 +2,10 @@
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 
+#ifdef __MINGW32__
+#include <shellapi.h>
+#endif
+
 #pragma warning(push)
 #pragma warning(disable : 4768)
 #include <ShlObj.h>
@@ -137,7 +141,9 @@ static void inner(const VcpkgCmdArguments& args)
         }
         else
         {
-#if defined(_WIN32)
+#if defined(__MINGW32__)
+            default_triplet = Triplet::from_canonical_name("x64-mingw");
+#elif defined(_WIN32)
             default_triplet = Triplet::X64_WINDOWS;
 #elif defined(__APPLE__)
             default_triplet = Triplet::from_canonical_name("x64-osx");
@@ -316,4 +322,18 @@ int main(const int argc, const char* const* const argv)
 #endif
     }
     fflush(stdout);
+    return EXIT_FAILURE;
 }
+
+#ifdef __MINGW32__
+int CALLBACK WinMain(
+  _In_ HINSTANCE /*hInstance*/,
+  _In_ HINSTANCE /*hPrevInstance*/,
+  _In_ LPSTR     /*lpCmdLine*/,
+  _In_ int       /*nCmdShow*/
+) {
+    int argc = 0;
+    auto* argv = CommandLineToArgvW(GetCommandLineW(), &argc);
+    return wmain(argc, argv);
+}
+#endif
