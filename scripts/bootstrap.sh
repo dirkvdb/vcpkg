@@ -103,6 +103,9 @@ fetchTool()
         os="linux"
     elif [ "$UNAME" = "Darwin" ]; then
         os="osx"
+    elif [ "$UNAME" = "MINGW64_NT-10.0" ]; then
+        eval $__output="'/mingw64/bin/cmake'"
+        return 0
     else
         echo "Unknown uname: $UNAME"
         return 1
@@ -201,7 +204,7 @@ buildDir="$vcpkgRootDir/toolsrc/build.rel"
 rm -rf "$buildDir"
 mkdir -p "$buildDir"
 
-(cd "$buildDir" && CXX=$CXX "$cmakeExe" .. -DCMAKE_BUILD_TYPE=Release -G "Ninja" "-DCMAKE_MAKE_PROGRAM=$ninjaExe" "-DDEFINE_DISABLE_METRICS=$vcpkgDisableMetrics")
+(cd "$buildDir" && CXX=$CXX "$cmakeExe" .. -DCMAKE_BUILD_TYPE=Release -G Ninja -DDEFINE_DISABLE_METRICS=$vcpkgDisableMetrics)
 (cd "$buildDir" && "$cmakeExe" --build .)
 
 rm -rf "$vcpkgRootDir/vcpkg"
