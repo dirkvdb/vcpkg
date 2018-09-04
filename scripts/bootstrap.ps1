@@ -1,7 +1,7 @@
 [CmdletBinding()]
 param(
     $badParam,
-    [Parameter(Mandatory=$False)][switch]$disableMetrics = $false,
+    [Parameter(Mandatory=$False)][switch]$enableMetrics = $false,
     [Parameter(Mandatory=$False)][switch]$win64 = $false,
     [Parameter(Mandatory=$False)][string]$withVSPath = "",
     [Parameter(Mandatory=$False)][string]$withWinSDK = ""
@@ -10,9 +10,9 @@ Set-StrictMode -Version Latest
 # Powershell2-compatible way of forcing named-parameters
 if ($badParam)
 {
-    if ($disableMetrics -and $badParam -eq "1")
+    if ($enableMetrics -and $badParam -eq "1")
     {
-        Write-Warning "'disableMetrics 1' is deprecated, please change to 'disableMetrics' (without '1')"
+        Write-Warning "'enableMetrics 1' is deprecated, please change to 'enableMetrics' (without '1')"
     }
     else
     {
@@ -321,10 +321,10 @@ $msbuildExe = $msbuildExeWithPlatformToolset[0]
 $platformToolset = $msbuildExeWithPlatformToolset[1]
 $windowsSDK = getWindowsSDK -withWinSDK $withWinSDK
 
-$disableMetricsValue = "0"
-if ($disableMetrics)
+$disableMetricsValue = "1"
+if ($enableMetrics)
 {
-    $disableMetricsValue = "1"
+    $disableMetricsValue = "0"
 }
 
 $platform = "x86"
