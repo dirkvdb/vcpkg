@@ -37,6 +37,12 @@
 
 using namespace vcpkg;
 
+// 24 hours/day * 30 days/month * 6 months
+static constexpr int SURVEY_INTERVAL_IN_HOURS = 24 * 30 * 6;
+
+// Initial survey appears after 10 days. Therefore, subtract 24 hours/day * 10 days
+static constexpr int SURVEY_INITIAL_OFFSET_IN_HOURS = SURVEY_INTERVAL_IN_HOURS - 24 * 10;
+
 void invalid_command(const std::string& cmd)
 {
     System::println(System::Color::error, "invalid command: %s", cmd);
@@ -117,7 +123,7 @@ static void inner(const VcpkgCmdArguments& args)
 #endif
     Checks::check_exit(VCPKG_LINE_INFO, exit_code == 0, "Changing the working dir failed");
 
-    if (args.command != "autocomplete")
+    if (args.command == "install" || args.command == "remove" || args.command == "export" || args.command == "update")
     {
         Commands::Version::warn_if_vcpkg_version_mismatch(paths);
     }
@@ -198,7 +204,9 @@ static void load_config()
 
     if (config.last_completed_survey.empty())
     {
-        config.last_completed_survey = config.user_time;
+        const auto now = Chrono::CTime::parse(config.user_time).value_or_exit(VCPKG_LINE_INFO);
+        const Chrono::CTime offset = now.add_hours(-SURVEY_INITIAL_OFFSET_IN_HOURS);
+        config.last_completed_survey = offset.to_string();
     }
 
     if (write_config)
@@ -243,6 +251,7 @@ int main(const int argc, const char* const* const argv)
 #if defined(_WIN32)
     GlobalState::g_init_console_cp = GetConsoleCP();
     GlobalState::g_init_console_output_cp = GetConsoleOutputCP();
+    GlobalState::g_init_console_initialized = true;
 
     SetConsoleCP(CP_UTF8);
     SetConsoleOutputCP(CP_UTF8);
@@ -257,6 +266,9 @@ int main(const int argc, const char* const* const argv)
         locked_metrics->track_property("cmdline", trimmed_command_line);
 #endif
     }
+
+    Checks::register_console_ctrl_handler();
+
     load_config();
 
     const auto vcpkg_feature_flags_env = System::get_environment_variable("VCPKG_FEATURE_FLAGS");
@@ -275,8 +287,6 @@ int main(const int argc, const char* const* const argv)
     if (const auto p = args.printmetrics.get()) Metrics::g_metrics.lock()->set_print_metrics(*p);
     if (const auto p = args.sendmetrics.get()) Metrics::g_metrics.lock()->set_send_metrics(*p);
     if (const auto p = args.debug.get()) GlobalState::debugging = *p;
-
-    Checks::register_console_ctrl_handler();
 
     if (GlobalState::debugging)
     {
@@ -326,12 +336,12 @@ int main(const int argc, const char* const* const argv)
 }
 
 #ifdef __MINGW32__
-int CALLBACK WinMain(
-  _In_ HINSTANCE /*hInstance*/,
-  _In_ HINSTANCE /*hPrevInstance*/,
-  _In_ LPSTR     /*lpCmdLine*/,
-  _In_ int       /*nCmdShow*/
-) {
+int CALLBACK WinMain(_In_ HINSTANCE /*hInstance*/,
+                     _In_ HINSTANCE /*hPrevInstance*/,
+                     _In_ LPSTR /*lpCmdLine*/,
+                     _In_ int /*nCmdShow*/
+)
+{
     int argc = 0;
     auto* argv = CommandLineToArgvW(GetCommandLineW(), &argc);
     return wmain(argc, argv);
