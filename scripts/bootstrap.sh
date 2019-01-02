@@ -1,6 +1,6 @@
 #!/bin/sh
 
-vcpkgDisableMetrics="OFF"
+vcpkgDisableMetrics="ON"
 vcpkgUseSystem=false
 for var in "$@"
 do
