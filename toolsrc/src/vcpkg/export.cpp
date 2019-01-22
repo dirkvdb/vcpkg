@@ -39,6 +39,7 @@ namespace vcpkg::Export
     <files>
         <file src="@RAW_EXPORTED_DIR@\installed\**" target="installed" />
         <file src="@RAW_EXPORTED_DIR@\scripts\**" target="scripts" />
+        <file src="@RAW_EXPORTED_DIR@\triplets\**" target="triplets" />
         <file src="@RAW_EXPORTED_DIR@\.vcpkg-root" target="" />
         <file src="@TARGETS_REDIRECT_PATH@" target="build\native\@NUGET_ID@.targets" />
     </files>
@@ -232,6 +233,15 @@ namespace vcpkg::Export
             {fs::path {"scripts"} / "buildsystems" / "msbuild" / "vcpkg.targets"},
             {fs::path {"scripts"} / "buildsystems" / "vcpkg.cmake"},
             {fs::path {"scripts"} / "cmake" / "vcpkg_get_windows_sdk.cmake"},
+            {fs::path {"triplets"} / "x64-windows.cmake"},
+            {fs::path {"triplets"} / "x64-windows-static.cmake"},
+            {fs::path {"triplets"} / "x64-mingw.cmake"},
+            {fs::path {"triplets"} / "x64-linux.cmake"},
+            {fs::path {"triplets"} / "x64-linux-musl.cmake"},
+            {fs::path {"triplets"} / "x64-linux-cluster.cmake"},
+            {fs::path {"triplets"} / "x64-osx.cmake"},
+            {fs::path {"triplets"} / "x64-osx-homebrew.cmake"},
+            {fs::path {"triplets"} / "x64-osx-gcc.cmake"},
         };
 
         for (const fs::path& file : integration_files_relative_to_root)
