@@ -126,6 +126,8 @@ fetchTool()
     elif [ "$UNAME" = "MINGW64_NT-10.0" ]; then
         eval $__output="'/mingw64/bin/cmake'"
         return 0
+    elif [ "$UNAME" = "FreeBSD" ]; then
+        os="freebsd"
     else
         echo "Unknown uname: $UNAME"
         return 1
