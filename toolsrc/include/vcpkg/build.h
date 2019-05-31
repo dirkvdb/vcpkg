@@ -51,6 +51,12 @@ namespace vcpkg::Build
         YES
     };
 
+    enum class CleanDownloads
+    {
+        NO = 0,
+        YES
+    };
+
     enum class ConfigurationType
     {
         DEBUG,
@@ -88,6 +94,7 @@ namespace vcpkg::Build
         AllowDownloads allow_downloads;
         CleanBuildtrees clean_buildtrees;
         CleanPackages clean_packages;
+        CleanDownloads clean_downloads;
         DownloadTool download_tool;
         BinaryCaching binary_caching;
         FailOnTombstone fail_on_tombstone;
