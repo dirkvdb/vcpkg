@@ -276,15 +276,20 @@ namespace vcpkg::CoffFileReader
         marker.advance_by(ArchiveMemberHeader::HEADER_SIZE + first_linker_member_header.member_size());
         marker.seek_to_marker(fs);
 
-        const ArchiveMemberHeader second_linker_member_header = ArchiveMemberHeader::read(fs);
-        Checks::check_exit(VCPKG_LINE_INFO,
-                           second_linker_member_header.name().substr(0, 2) == "/ ",
-                           "Could not find proper second linker member");
-        // The first 4 bytes contains the number of archive members
-        const auto archive_member_count = read_value_from_stream<uint32_t>(fs);
-        const OffsetsArray offsets = OffsetsArray::read(fs, archive_member_count);
-        marker.advance_by(ArchiveMemberHeader::HEADER_SIZE + second_linker_member_header.member_size());
-        marker.seek_to_marker(fs);
+        // Check if this is already the long name section (when using clang on windows)
+        OffsetsArray offsets;
+        if (peek_value_from_stream<uint16_t>(fs) != 0x2F2F)
+        {
+            const ArchiveMemberHeader second_linker_member_header = ArchiveMemberHeader::read(fs);
+            Checks::check_exit(VCPKG_LINE_INFO,
+                            second_linker_member_header.name().substr(0, 2) == "/ ",
+                            "Could not find proper second linker member");
+            // The first 4 bytes contains the number of archive members
+            const auto archive_member_count = read_value_from_stream<uint32_t>(fs);
+            offsets = OffsetsArray::read(fs, archive_member_count);
+            marker.advance_by(ArchiveMemberHeader::HEADER_SIZE + second_linker_member_header.member_size());
+            marker.seek_to_marker(fs);
+        }
 
         const bool has_longname_member_header = peek_value_from_stream<uint16_t>(fs) == 0x2F2F;
         if (has_longname_member_header)
