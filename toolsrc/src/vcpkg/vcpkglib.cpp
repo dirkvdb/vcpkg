@@ -75,7 +75,7 @@ namespace vcpkg
         fs.write_contents(status_file_new, Strings::serialize(current_status_db), VCPKG_LINE_INFO);
 
         if (fs.exists(status_file)) {
-            fs.remove(status_file);
+            fs.remove(status_file, VCPKG_LINE_INFO);
         }
         fs.rename(status_file_new, status_file, VCPKG_LINE_INFO);
 
